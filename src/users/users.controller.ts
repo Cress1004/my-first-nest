@@ -5,9 +5,11 @@ import {
   Get,
   Param,
   Post,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { UserInfDto } from './dto/user-info.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -17,9 +19,10 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
-  @Get('/:id')
-  getUserByID(@Param('id') id: string) {
-    return this.usersService.getUserByID(id);
+  @Get('/:username')
+  @UseGuards(AuthGuard('jwt'))
+  getUserByID(@Param('username') username: string) {
+    return this.usersService.getUserByUserName(username);
   }
 
   @Post()
