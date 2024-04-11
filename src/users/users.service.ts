@@ -3,6 +3,7 @@ import { UserInfDto } from './dto/user-info.dto';
 import { User } from './entiry/users.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bycrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,7 @@ export class UsersService {
   async create(user: UserInfDto) {
     const newUser = this.usersRepository.create({
       userName: user.username,
-      password: user.password,
+      password: await bycrypt.hash(user.password, 12),
     });
     return await this.usersRepository.save(newUser);
   }
@@ -23,6 +24,13 @@ export class UsersService {
   }
   async getUserByID(id: string): Promise<User | null> {
     const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Could not find user');
+    }
+    return user;
+  }
+  async getUserByUserName(userName: string): Promise<User | null> {
+    const user = await this.usersRepository.findOneBy({ userName });
     if (!user) {
       throw new NotFoundException('Could not find user');
     }
