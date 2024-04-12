@@ -5,6 +5,8 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entiry/users.entity';
 import { AuthModule } from './auth/auth.module';
+import { TasksModule } from './tasks/tasks.module';
+import { Task } from './tasks/entity/tasks.entity';
 
 @Module({
   imports: [
@@ -16,10 +18,11 @@ import { AuthModule } from './auth/auth.module';
       username: 'nguyenthanh',
       password: '',
       database: 'my-first-nest',
-      entities: [User],
+      entities: [User, Task],
       synchronize: true,
     }),
     AuthModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
